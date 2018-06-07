@@ -1,7 +1,9 @@
 const slugify = require('slugify');
+const rp = require('request-promise');
+const scrape = require('../helpers/scrape');
 const Clip = require('../models/clips.js');
 
-const slugDigit = Math.floor(Math.random()*90000) + 10000;
+const slugDigit = Math.floor(Math.random() * 90000) + 10000;
 
 // Get all clips
 exports.clip_list = async (req, res) => {
@@ -11,12 +13,14 @@ exports.clip_list = async (req, res) => {
 
 // Get one clip
 exports.clip_detail = async (req, res) => {
-  const clip = await Clip.findOne({ slug: req.params.slug });
+  const clip = await Clip.findOne({
+    slug: req.params.slug
+  });
   res.send(clip);
 };
 
 // Post new clip
-exports.clip_create_post = function (req, res) {
+exports.clip_create_post = function(req, res) {
   const clip = new Clip({
     title: req.body.title,
     summary: req.body.summary,
@@ -31,6 +35,26 @@ exports.clip_create_post = function (req, res) {
   res.send(clip);
 };
 
+// Get save clip
+exports.clip_save_clip = async (req, res) => {
+  const url = req.query.url || req.body.url;
+  await rp(url)
+    .then(page => {
+      const data = scrape(page, url);
+      const clip = new Clip({
+        title: data.pageTitle,
+        summary: data.pageSummary,
+        url: data.pageUrl,
+        slug: slugify(`${data.pageTitle}-${slugDigit}`)
+      });
+      clip.save(err => {
+        if (err) console.log(err.message);
+      });
+      res.send(clip);
+    })
+    .catch(err => console.log(err.message));
+};
+
 // Put update clip
 exports.clip_update_put = async (req, res) => {
   let slug = req.params.slug;
@@ -38,16 +62,26 @@ exports.clip_update_put = async (req, res) => {
     req.body.slug = slugify(`${req.body.title}-${slugDigit}`);
     slug = req.body.slug;
   }
-  await Clip.findOneAndUpdate({ slug: req.params.slug }, req.body, (err) => {
-    if (err) {
-      return res.status(500).send({ error: 'Unsuccessful'});
+  await Clip.findOneAndUpdate(
+    {
+      slug: req.params.slug
+    },
+    req.body,
+    err => {
+      if (err) {
+        return res.status(500).send({
+          error: 'Unsuccessful'
+        });
+      }
     }
-  });
+  );
   res.redirect(`/api/clip/${slug}`);
 };
 
 // Delete clip
 exports.clip_delete = async (req, res) => {
-  await Clip.findOneAndDelete({ slug: req.params.slug });
+  await Clip.findOneAndDelete({
+    slug: req.params.slug
+  });
   res.send('Clip removed');
 };
