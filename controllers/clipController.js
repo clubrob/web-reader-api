@@ -1,6 +1,6 @@
 const slugify = require('slugify');
 const rp = require('request-promise');
-const scrape = require('../helpers/scrape');
+const scrape = require('../helpers/scrape.js');
 const Clip = require('../models/clips.js');
 
 const slugDigit = Math.floor(Math.random() * 90000) + 10000;
@@ -20,7 +20,7 @@ exports.clip_detail = async (req, res) => {
 };
 
 // Post new clip
-exports.clip_create_post = function(req, res) {
+/* exports.clip_create_post = function(req, res) {
   const clip = new Clip({
     title: req.body.title,
     summary: req.body.summary,
@@ -33,7 +33,7 @@ exports.clip_create_post = function(req, res) {
   });
 
   res.send(clip);
-};
+}; */
 
 // Get save clip
 exports.clip_save_clip = async (req, res) => {
@@ -47,10 +47,10 @@ exports.clip_save_clip = async (req, res) => {
         url: data.pageUrl,
         slug: slugify(`${data.pageTitle}-${slugDigit}`)
       });
-      clip.save(err => {
-        if (err) console.log(err.message);
-      });
-      res.send(clip);
+      clip
+        .save()
+        .then(res.send(clip))
+        .catch(err => console.log(err.message));
     })
     .catch(err => console.log(err.message));
 };

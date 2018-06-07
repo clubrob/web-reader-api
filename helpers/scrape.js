@@ -3,7 +3,7 @@ const cheerio = require('cheerio');
 const scrape = function(htmlString, url) {
   const $ = cheerio.load(htmlString);
 
-  let props = {};
+  const props = {};
 
   props.pageTitle =
     $('meta[property="og:title"]').attr('content') ||
@@ -15,9 +15,9 @@ const scrape = function(htmlString, url) {
     $('meta[name="description"]').attr('content') ||
     'No Summary';
   props.pageUrl =
-    $('meta[property="og:url"]').attr('content') ||
+    url ||
     $('link[rel="canonical"]').attr('href') ||
-    url;
+    $('meta[property="og:url"]').attr('content');
 
   return props;
 };

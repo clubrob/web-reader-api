@@ -7,10 +7,11 @@ const clip_controller = require('../controllers/clipController.js');
 router.get('/', clip_controller.clip_list);
 
 // POST api/
-router.post('/', clip_controller.clip_create_post);
+/* router.post('/', clip_controller.clip_create_post); */
 
 // GET api/save/{url}
 router.get('/save', clip_controller.clip_save_clip);
+
 // POST api/save/{url}
 router.post('/save', clip_controller.clip_save_clip);
 
