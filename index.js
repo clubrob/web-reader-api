@@ -3,13 +3,15 @@ const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const Joi = require('joi');
 
 const app = express();
 
 const apiRouter = require('./routes/api.js');
 
-const mongoDB = 'mongodb://localhost:27017/web-reader';
+const dbHost = process.env.DB_HOST;
+const dbPort = process.env.DB_PORT;
+const dbName = process.env.DB_NAME;
+const mongoDB = `mongodb://${dbHost}:${dbPort}/${dbName}`;
 mongoose.connect(mongoDB)
   .then(() => console.log('Connected to Mongo...'))
   .catch(err => console.log(err.message));
@@ -28,4 +30,6 @@ if (process.env.NODE_ENV === 'development') {
 
 const port = process.env.PORT || 3000;
 
-app.listen(port, () => { console.log(`http://localhost:${port}`)});
+app.listen(port, () => { 
+  console.log(`http://localhost:${port}`);
+});
