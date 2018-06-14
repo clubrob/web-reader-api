@@ -1,6 +1,7 @@
 const slugify = require('slugify');
 const rp = require('request-promise');
 const scrape = require('../helpers/scrape.js');
+const read = require('../helpers/read.js');
 const Clip = require('../models/clips.js');
 
 const slugDigit = Math.floor(Math.random() * 90000) + 10000;
@@ -84,4 +85,10 @@ exports.clip_delete = async (req, res) => {
     slug: req.params.slug
   });
   res.send('Clip removed');
+};
+
+// Get read clip
+exports.clip_read = async (req, res) => {
+  const readerContent = await read(req.query.url);
+  res.send(readerContent);
 };

@@ -6,8 +6,8 @@ const clip_controller = require('../controllers/clipController.js');
 // GET api/
 router.get('/', clip_controller.clip_list);
 
-// POST api/
-/* router.post('/', clip_controller.clip_create_post); */
+//GET api/read
+router.get('/read', clip_controller.clip_read);
 
 // GET api/save/{url}
 router.get('/save', clip_controller.clip_save_clip);
