@@ -41,16 +41,23 @@ exports.clip_save_clip = async (req, res) => {
   const url = req.query.url || req.body.url;
   await rp(url)
     .then(page => {
-      const data = scrape(page, url);
-      const clip = new Clip({
-        title: data.pageTitle,
-        summary: data.pageSummary,
-        url: data.pageUrl,
-        slug: slugify(`${data.pageTitle}-${slugDigit}`)
-      });
-      clip
-        .save()
-        .then(res.send(clip))
+      return scrape(page, url)
+        .then(clipJson => {
+          console.log(clipJson);
+          const clip = new Clip({
+            title: clipJson.pageTitle,
+            summary: clipJson.pageSummary,
+            url: clipJson.pageUrl,
+            slug: slugify(`${clipJson.pageTitle}-${slugDigit}`, {
+              remove: /[$*_+~.()'"!:@]/g
+            }),
+            readable: clipJson.readableContent
+          });
+          clip
+            .save()
+            .then(res.send(clip))
+            .catch(err => console.log(err.message));
+        })
         .catch(err => console.log(err.message));
     })
     .catch(err => console.log(err.message));
@@ -89,6 +96,8 @@ exports.clip_delete = async (req, res) => {
 
 // Get read clip
 exports.clip_read = async (req, res) => {
-  const readerContent = await read(req.query.url);
+  const readerContent = await Clip.findOne({
+    slug: req.query.s
+  });
   res.send(readerContent);
 };

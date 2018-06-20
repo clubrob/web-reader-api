@@ -24,6 +24,9 @@ const clipSchema = new mongoose.Schema({
   },
   tags: {
     type: [String]
+  },
+  readable: {
+    type: String
   }
 });
 
