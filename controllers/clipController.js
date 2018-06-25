@@ -88,9 +88,18 @@ exports.clip_update_put = async (req, res) => {
 
 // Delete clip
 exports.clip_delete = async (req, res) => {
-  await Clip.findOneAndDelete({
-    slug: req.params.slug
-  });
+  await Clip.findOneAndDelete(
+    {
+      slug: req.params.slug
+    },
+    err => {
+      if (err) {
+        return res.status(500).send({
+          error: 'Unsuccessful'
+        });
+      }
+    }
+  );
   res.send('Clip removed');
 };
 
