@@ -4,8 +4,6 @@ const scrape = require('../helpers/scrape.js');
 const read = require('../helpers/read.js');
 const Clip = require('../models/clips.js');
 
-const slugDigit = Math.floor(Math.random() * 90000) + 10000;
-
 // Get all clips
 exports.clip_list = async (req, res) => {
   const clips = await Clip.find();
@@ -20,42 +18,33 @@ exports.clip_detail = async (req, res) => {
   res.send(clip);
 };
 
-// Post new clip
-/* exports.clip_create_post = function(req, res) {
-  const clip = new Clip({
-    title: req.body.title,
-    summary: req.body.summary,
-    url: req.body.url,
-    slug: slugify(`${req.body.title}-${slugDigit}`),
-    tags: req.body.tags
-  });
-  clip.save(err => {
-    if (err) console.log(err);
-  });
-
-  res.send(clip);
-}; */
-
 // Get save clip
 exports.clip_save_clip = async (req, res) => {
-  const url = req.query.url || req.body.url;
+  const clip = req.body;
+  const url = clip.url;
+  const tags = clip.tags;
+  const summary = clip.summary || null;
+  const title = clip.title || null;
+
   await rp(url)
     .then(page => {
       return scrape(page, url)
         .then(clipJson => {
-          console.log(clipJson);
+          // console.log(clipJson);
+          const slugDigit = Math.floor(Math.random() * 90000) + 10000;
           const clip = new Clip({
-            title: clipJson.pageTitle,
-            summary: clipJson.pageSummary,
+            title: title || clipJson.pageTitle,
+            summary: summary || clipJson.pageSummary,
             url: clipJson.pageUrl,
             slug: slugify(`${clipJson.pageTitle}-${slugDigit}`, {
-              remove: /[$*_+~.()'"!:@]/g
+              remove: /[$*_+~.()'"!,:@]/g
             }),
-            readable: clipJson.readableContent
+            readable: clipJson.readableContent,
+            tags: tags
           });
           clip
             .save()
-            .then(res.send(clip))
+            /* .then(res.send(clip)) */
             .catch(err => console.log(err.message));
         })
         .catch(err => console.log(err.message));
@@ -67,6 +56,7 @@ exports.clip_save_clip = async (req, res) => {
 exports.clip_update_put = async (req, res) => {
   let slug = req.params.slug;
   if (req.body.title) {
+    const slugDigit = req.body.slug.substr(-5);
     req.body.slug = slugify(`${req.body.title}-${slugDigit}`);
     slug = req.body.slug;
   }
@@ -83,7 +73,6 @@ exports.clip_update_put = async (req, res) => {
       }
     }
   );
-  res.redirect(`/api/clip/${slug}`);
 };
 
 // Delete clip
