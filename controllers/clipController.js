@@ -37,14 +37,14 @@ exports.clip_save_clip = async (req, res) => {
             summary: summary || clipJson.pageSummary,
             url: clipJson.pageUrl,
             slug: slugify(`${clipJson.pageTitle}-${slugDigit}`, {
-              remove: /[$*_+~.()'"!,:@]/g
+              remove: /[$*_+~.()'"!,?:@]/g
             }),
             readable: clipJson.readableContent,
             tags: tags
           });
           clip
             .save()
-            /* .then(res.send(clip)) */
+            .then(res.send(clip))
             .catch(err => console.log(err.message));
         })
         .catch(err => console.log(err.message));
@@ -54,11 +54,9 @@ exports.clip_save_clip = async (req, res) => {
 
 // Put update clip
 exports.clip_update_put = async (req, res) => {
-  let slug = req.params.slug;
   if (req.body.title) {
     const slugDigit = req.body.slug.substr(-5);
     req.body.slug = slugify(`${req.body.title}-${slugDigit}`);
-    slug = req.body.slug;
   }
   await Clip.findOneAndUpdate(
     {
@@ -72,7 +70,7 @@ exports.clip_update_put = async (req, res) => {
         });
       }
     }
-  );
+  ).then(() => res.send('butts'));
 };
 
 // Delete clip
@@ -88,8 +86,7 @@ exports.clip_delete = async (req, res) => {
         });
       }
     }
-  );
-  res.send('Clip removed');
+  ).then(() => res.send('Clip removed'));
 };
 
 // Get read clip
