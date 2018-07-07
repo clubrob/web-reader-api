@@ -10,8 +10,12 @@
     "logs": "firebase functions:log"
   },
   "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
     "firebase-admin": "~5.12.1",
-    "firebase-functions": "^1.0.3"
+    "firebase-functions": "^1.0.3",
+    "request": "^2.87.0",
+    "request-promise": "^4.2.2",
+    "slugify": "^1.3.0"
   },
   "devDependencies": {
     "eslint": "^4.12.0",
