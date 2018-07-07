@@ -1,37 +1,94 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+admin.initializeApp();
+
 const rp = require('request-promise');
 const cheerio = require('cheerio');
 const slugify = require('slugify');
+const cors = require('cors')({ origin: true });
 
-admin.initializeApp();
+exports.readClips = functions.https.onRequest((request, response) => {
+  return admin.firestore().collection('clips')
+    .get().then(querySnapshot => {
+      let results = [];
+      querySnapshot.forEach(documentSnapshot => {
+        results = results.push(documentSnapshot);
+      });
+      return response.status(200).json({ results: results});
+    })
+    .catch(err => {
+      console.error(err.message);
+      return response.status(403).json({ error: 'Unauthorized' });
+    });
+  /* if (request.method === 'GET') {
+    cors(request, response, () => {
+      let idToken;
+      if (request.headers.authorization && request.headers.authorization.startsWith('Bearer ')) {
+        idToken = request.headers.authorization.split('Bearer ')[1];
 
-/* exports.readClips = functions.https.onRequest((request, response) => {
-  response.send("Read your clips!");
+        admin.auth().verifyIdToken(idToken)
+          .then(decoded => decoded)
+          .then(() => {
+            return admin.firestore().collection('clips')
+              .limit(1)
+              .get();
+          })
+          .then(results => {
+            return response.status(200).json({ results: results});
+          })
+          .catch(err => {
+            console.error(err.message);
+            return response.status(403).json({ error: 'Unauthorized' });
+          });
+      } 
+      
+      return response.status(500).json({ message: 'Not authorized ' });
+    });
+  }
+  
+  return response.status(500).json({ message: 'Not allowed.' }); */
 });
 
 exports.readClip = functions.https.onRequest((request, response) => {
   response.send("Read your clip!");
-}); */
+});
 
 exports.createClip = functions.https.onRequest((request, response) => {
   if (request.method === 'POST') {
-    const clip = request.body;
-    
-    // TODO validate input values
+    cors(request, response, () => {
+      let idToken;
+      if (request.headers.authorization && request.headers.authorization.startsWith('Bearer ')) {
+        idToken = request.headers.authorization.split('Bearer ')[1];
 
-    return admin.firestore().collection('clips')
-      .add({
-        url: clip.url,
-        tags: clip.tags,
-        date: clip.date || Date.now()
-      })
-      .then((writeResult) => {
-        return response.status(200).json({ result: `Message with ID: ${writeResult.id} added.`});
-      });
-  } else {
-    return response.status(500).json({ message: 'Not allowed.' });
+        admin.auth().verifyIdToken(idToken)
+          .then(decoded => decoded)
+          .then((decoded) => {
+            console.log(decoded);
+            const clip = request.body;
+        
+            // TODO validate input values
+    
+            return admin.firestore().collection('clips')
+              .add({
+                url: clip.url,
+                tags: clip.tags,
+                date: clip.date || Date.now()
+              });
+          })
+          .then((writeResult) => {
+            return response.status(200).json({ result: `Message with ID: ${writeResult.id} added.`});
+          })
+          .catch(err => {
+            console.error(err.message);
+            return response.status(403).json({ error: 'Unauthorized' });
+          });
+      } 
+      
+      return response.status(500).json({ message: 'Not authorized ' });
+    });
   }
+  
+  return response.status(500).json({ message: 'Not allowed.' });
 });
 
 /* exports.updateClip = functions.https.onRequest((request, response) => {
