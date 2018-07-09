@@ -1,3 +1,5 @@
-.env
-node_modules/
-logs/
+functions/node_modules
+.firebaserc
+firestore.rules
+firestore.indexes.json
+functions/.runtimeconfig.json
