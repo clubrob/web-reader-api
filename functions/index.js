@@ -64,6 +64,7 @@ app.get('/read/:slug', authorizeMe, [
       return res.send('Document not found');
     });
 });
+
 // GET all items
 app.get('/read', authorizeMe, (req, res) => {
   return admin.firestore().collection('clips').get()
@@ -79,6 +80,7 @@ app.get('/read', authorizeMe, (req, res) => {
       return res.send('Error getting documents');
     });
 });
+
 // GET tag list 
 app.get('/tag/:tag', authorizeMe, [
   check('tag').isAlphanumeric()
@@ -108,6 +110,7 @@ app.get('/tag/:tag', authorizeMe, [
       return res.send('Document not found');
     });
 });
+
 // POST new item
 app.post('/save', authorizeMe, [
   // Validate inputs
@@ -145,6 +148,7 @@ app.post('/save', authorizeMe, [
     })
     .catch(err => console.error(err.message));
 });
+
 // PUT update item
 app.put('/save/:slug', authorizeMe, [
   // Validate slug
@@ -204,6 +208,7 @@ app.put('/save/:slug', authorizeMe, [
       return res.status(500).send('Error updating');
     });
 });
+
 // DELETE item
 app.delete('/delete/:slug', authorizeMe, [
   // Validate slug
@@ -235,8 +240,10 @@ app.delete('/delete/:slug', authorizeMe, [
     });
 });
 
+// HTTPS function
 exports.reader = functions.https.onRequest(app);
 
+// Trigger functions
 // Simple web scraping function
 exports.scrapeClip = functions.firestore.document('/clips/{documentId}').onCreate((snapshot, context) => {
   const url = snapshot.data().url;
