@@ -1,0 +1,41 @@
+[debug] [2018-07-09T18:32:03.254Z] ----------------------------------------------------------------------
+[debug] [2018-07-09T18:32:03.269Z] Command:       /home/rlindsey/.nvm/versions/node/v10.6.0/bin/node /home/rlindsey/.nvm/versions/node/v10.6.0/bin/firebase serve
+[debug] [2018-07-09T18:32:03.270Z] CLI Version:   3.19.3
+[debug] [2018-07-09T18:32:03.270Z] Platform:      linux
+[debug] [2018-07-09T18:32:03.270Z] Node Version:  v10.6.0
+[debug] [2018-07-09T18:32:03.561Z] Time:          Mon Jul 09 2018 13:32:03 GMT-0500 (GMT-05:00)
+[debug] [2018-07-09T18:32:03.561Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-07-09T18:32:03.575Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-07-09T18:32:03.576Z] > authorizing via signed-in user
+[debug] [2018-07-09T18:32:03.579Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/web-reader-api  
+  
+ Mon Jul 09 2018 13:32:03 GMT-0500 (GMT-05:00)
+[debug] [2018-07-09T18:32:04.059Z] <<< HTTP RESPONSE 200
+[debug] [2018-07-09T18:32:04.060Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/web-reader-api/tokens  
+  
+ Mon Jul 09 2018 13:32:04 GMT-0500 (GMT-05:00)
+[debug] [2018-07-09T18:32:04.543Z] <<< HTTP RESPONSE 200
+[debug] [2018-07-09T18:32:04.544Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/web-reader-api  
+  
+ Mon Jul 09 2018 13:32:04 GMT-0500 (GMT-05:00)
+[debug] [2018-07-09T18:32:04.803Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Serving from '/mnt/c/Users/rclin/Documents/Dev/web-reader-backend'...
+[info] 
+[info] i  functions: Preparing to emulate functions.
+[debug] [2018-07-09T18:32:05.904Z] Fetching environment
+[debug] [2018-07-09T18:32:05.908Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/853743028999:getServerAppConfig  
+  
+ Mon Jul 09 2018 13:32:05 GMT-0500 (GMT-05:00)
+[debug] [2018-07-09T18:32:05.908Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/853743028999/clients/_:getWebAppConfig  
+  
+ Mon Jul 09 2018 13:32:05 GMT-0500 (GMT-05:00)
+[debug] [2018-07-09T18:32:06.263Z] <<< HTTP RESPONSE 200
+[info] i  hosting: Serving hosting files from: public
+[info] ✔  hosting: Local server: http://localhost:5000
+
+[debug] [2018-07-09T18:32:06.295Z] <<< HTTP RESPONSE 200
+[debug] [2018-07-09T18:32:06.296Z] Starting @google-cloud/functions-emulator
+[debug] [2018-07-09T18:32:08.360Z] Parsing function triggers
+[info] ✔  functions: webClipper: http://localhost:5001/web-reader-api/us-central1/webClipper
