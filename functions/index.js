@@ -125,7 +125,7 @@ app.post('/save', authorizeMe, [
   // Reducer function for array to obj.
   const tagReducer = function(tagObj, tag) {
     if (!tagObj[tag]) {  // Skip duplicate tags
-      tagObj[tag] = true;
+      tagObj[tag] = Date.now();
     }
     return tagObj;
   }
