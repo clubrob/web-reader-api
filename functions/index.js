@@ -67,7 +67,10 @@ app.get('/read/:slug', authorizeMe, [
 
 // GET all items
 app.get('/read', authorizeMe, (req, res) => {
-  return admin.firestore().collection('clips').get()
+  const collectionRef = admin.firestore().collection('clips');
+  const query = collectionRef.orderBy('date');
+
+  return query.get()
     .then(querySnapshot => {
       let results = [];
       querySnapshot.forEach(doc => {
@@ -92,7 +95,7 @@ app.get('/tag/:tag', authorizeMe, [
   }
   const tag = req.params.tag;
   const collectionRef = admin.firestore().collection('clips');
-  const query = collectionRef.where(`tags.${tag}`, '==', true);
+  const query = collectionRef.where(`tags.${tag}`, '>', 0).orderBy(`tags.${tag}`);
 
   return query.get()
     .then(querySnapshot => {
@@ -169,7 +172,7 @@ app.put('/save/:slug', authorizeMe, [
   // Reducer function for array to obj.
   const tagReducer = function(tagObj, tag) {
     if (!tagObj[tag]) {  // Skip duplicate tags
-      tagObj[tag] = true;
+      tagObj[tag] = Date.now();
     }
     return tagObj;
   }
