@@ -114,6 +114,28 @@ app.get('/tag/:tag', authorizeMe, [
     });
 });
 
+// GET featured tag list 
+app.get('/featured', (req, res) => {
+  const collectionRef = admin.firestore().collection('clips');
+  const query = collectionRef.where(`tags.featured`, '>', 0).orderBy(`tags.featured`, 'desc').limit(3);
+
+  return query.get()
+    .then(querySnapshot => {
+      let results = [];
+      if (querySnapshot.size > 0) {
+        querySnapshot.forEach(doc => {
+          results.push(doc.data());
+        });
+        return res.json(results);
+      }
+      return res.send('No such document');
+    })
+    .catch(err => {
+      console.error('Document not found: ', err.message);
+      return res.send('Document not found');
+    });
+});
+
 // POST new item
 app.post('/save', authorizeMe, [
   // Validate inputs
